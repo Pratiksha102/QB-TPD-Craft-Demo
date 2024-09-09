@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 app.get('/api/medals', async (req, res) => {
   try {
     const response = await axios({
-      method: 'post',
+      method: 'post', // Correct method for QuickBase query API
       url: 'https://api.quickbase.com/v1/records/query',
       headers: {
         'QB-Realm-Hostname': process.env.QB_REALM,
@@ -32,7 +32,7 @@ app.get('/api/medals', async (req, res) => {
       },
       data: {
         "from": process.env.QB_TABLE_ID,
-        "select": [7,14,9,11] 
+        "select": [7, 14, 9, 11] // Field IDs you want to fetch
       }
     });
     res.json(response.data);
@@ -45,35 +45,41 @@ app.get('/api/medals', async (req, res) => {
 // Example POST route to submit a new medal record to QuickBase
 app.post('/api/medals', async (req, res) => {
     const { country, sport, medal, year } = req.body;
-  
+
     try {
-      const response = await axios({
-        method: 'post',
-        url: 'https://api.quickbase.com/v1/records/upsert',
-        headers: {
-          'QB-Realm-Hostname': process.env.QB_REALM,
-          'Authorization': `QB-USER-TOKEN ${process.env.QB_USER_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          "to": process.env.QB_TABLE_ID, // QuickBase Medals Received table ID
-          "data": [
-            {
-              "6": { "value": country }, // Field ID 6 for Country
-              "14": { "value": sport },   // Field ID 14 for Sport
-              "9": { "value": medal },    // Field ID 9 for Medal
-              "11": { "value": year }     // Field ID 11 for Year
+        const response = await axios({
+            method: 'post', // Use 'post' for upserting records
+            url: 'https://api.quickbase.com/v1/records',
+            headers: {
+                'QB-Realm-Hostname': process.env.QB_REALM,
+                'Authorization': `QB-USER-TOKEN ${process.env.QB_USER_TOKEN}`,
+                'Content-Type': 'application/json',
+            },
+            data: {
+                "to": process.env.QB_TABLE_ID, // QuickBase Medals Received table ID
+                "data": [
+                    {
+                        "7": { "value": country }, // Field ID for Country
+                        "9": { "value": medal },   // Field ID for Medal
+                        "11": { "value": year },    // Field ID for Year
+                        "14": { "value": sport }    // Field ID for Sport
+                    }
+                ],
+                "fieldsToReturn": [
+                    7,
+                    9,
+                    11,
+                    14
+                ]
             }
-          ]
-        }
-      });
-      res.json(response.data);
+        });
+
+        res.json(response.data);
     } catch (error) {
-      console.error('Error posting data to QuickBase:', error.response ? error.response.data : error.message);
-      res.status(500).send('Server Error');
+        console.error('Error posting data to QuickBase:', error.response ? error.response.data : error.message);
+        res.status(500).send('Server Error');
     }
-  });
-  
+});
 
 // Start the Express server
 app.listen(PORT, () => {
