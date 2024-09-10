@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { getMedals } from "../api/quickbase";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import "./MedalsList.css"; // Import the CSS file
+import './MedalsList.css';
 
-const MedalsList = () => {
+const MedalsList = ({ dataUpdated, setDataUpdated }) => {
   const [medals, setMedals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,21 +13,22 @@ const MedalsList = () => {
     const fetchMedals = async () => {
       try {
         const data = await getMedals();
-        setMedals(data); // Adjust based on your API response structure
+        setMedals(data);
       } catch (err) {
         setError("Failed to fetch medals");
       } finally {
         setLoading(false);
+        setDataUpdated(false);
       }
     };
 
     fetchMedals();
-  }, []);
+  }, [dataUpdated, setDataUpdated]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
-  // Prepare data for Highcharts
+
   const countries = ["Canada", "United States", "Germany", "Norway"];
   const medalTypes = ["Gold", "Silver", "Bronze"];
 
@@ -40,7 +41,7 @@ const MedalsList = () => {
       type: 'bar',
     },
     title: {
-      text: 'Medal Count by Country',
+      text: '',
     },
     xAxis: {
       categories: countries,
@@ -70,7 +71,7 @@ const MedalsList = () => {
 
   return (
     <div className="chart-container">
-      <h1>Medal Counts by Country</h1>
+      <h3>Medal Counts by Country</h3>
       <HighchartsReact highcharts={Highcharts} options={chartOptions} />
     </div>
   );

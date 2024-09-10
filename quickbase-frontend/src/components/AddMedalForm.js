@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { postMedal } from "../api/quickbase";
-import './AddMedalForm.css'; // Import the CSS file
+import './AddMedalForm.css';
 
-const AddMedalForm = () => {
+const AddMedalForm = ({ onAddMedal }) => {
   const [country, setCountry] = useState('');
   const [sport, setSport] = useState('');
   const [medal, setMedal] = useState('');
@@ -21,6 +21,7 @@ const AddMedalForm = () => {
       setMedal('');
       setYear('');
       setError(null);
+      onAddMedal(); 
     } catch (err) {
       setError('Failed to add medal');
       setSuccess('');
@@ -29,7 +30,7 @@ const AddMedalForm = () => {
 
   return (
     <div className="container">
-      <h2>Add New Medal</h2>
+      <h3>Add New Medal</h3>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Country:</label>

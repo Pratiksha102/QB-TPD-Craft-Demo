@@ -9,25 +9,38 @@
 }
 
 h1, h2 {
-  color: #333;
+  color: white;
   text-align: center;
+}
+.headinggg{
+  color:white;
+}
+
+.App-header {
+  background-color:#2ac74e;
+  color: white; 
+  text-align: center;
+  padding: 8px 0; 
+  margin-bottom: 20px; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .components-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px; /* Add space between the components */
+  gap: 40px; 
 }
 
 form, .chart-container {
   width: 100%;
-  max-width: 800px; /* Both form and chart take max 800px width */
+  max-width: 800px; 
 }
 
 @media (max-width: 768px) {
   .components-container {
     padding: 10px;
-    gap: 20px; /* Reduce gap for smaller screens */
+    gap: 20px; 
   }
 }
